@@ -1,4 +1,5 @@
 class Vector(object):
+
     def __init__(self, coordinates):
         try:
             if not coordinates:
@@ -9,6 +10,18 @@ class Vector(object):
             raise ValueError('The coordinate must be nonempty')
         except TypeError:
             raise TypeError('The coordinates must be an iterable')
+
+    def plus(self, v):
+        new_coordinates = [x+y for x,y in zip(self.coordinates, v.coordinates)]
+        return Vector(new_coordinates)
+
+    def minus(self, v):
+        new_coordinates = [x-y for x,y in zip(self.coordinates, v.coordinates)]
+        return Vector(new_coordinates)
+
+    def scalar_multiply(self, c):
+        new_coordinates = [c*x for x in self.coordinates]
+        return Vector(new_coordinates)
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
@@ -26,3 +39,21 @@ if __name__ == "__main__":
 
     my_vector3 = Vector([-1, 2, 3])
     print my_vector == my_vector3
+
+    print my_vector.plus(my_vector2)
+    print my_vector.minus(my_vector3)
+    print my_vector.scalar_multiply(10)
+
+    # Exercises
+    print 'Exercises'
+    v1 = Vector([8.218, -9.341])
+    v2 = Vector([-1.129, 2.111])
+    print v1.plus(v2)
+
+    v3 = Vector([7.119, 8.125])
+    v4 = Vector([-8.223, 0.878])
+    print v3.minus(v4)
+
+    s = 7.41
+    v5 = Vector([1.671, -1.012, -0.318])
+    print v5.scalar_multiply(s)
