@@ -1,3 +1,5 @@
+from math import sqrt
+
 class Vector(object):
 
     def __init__(self, coordinates):
@@ -12,7 +14,7 @@ class Vector(object):
             raise TypeError('The coordinates must be an iterable')
 
     def plus(self, v):
-        new_coordinates = [x+y for x,y in zip(self.coordinates, v.coordinates)]
+        new_coordinates = [x+y for x, y in zip(self.coordinates, v.coordinates)]
         return Vector(new_coordinates)
 
     def minus(self, v):
@@ -23,6 +25,15 @@ class Vector(object):
         new_coordinates = [c*x for x in self.coordinates]
         return Vector(new_coordinates)
 
+    def magnitude(self):
+        return sqrt(sum([x**2 for x in self.coordinates]))
+
+    def normalize(self):
+        try:
+            return self.scalar_multiply(1. / self.magnitude())
+        except ZeroDivisionError:
+            raise Exception('Cannot normalize the zero vector')
+
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
 
@@ -31,21 +42,8 @@ class Vector(object):
 
 
 if __name__ == "__main__":
-    my_vector = Vector([1, 2, 3])
-    print my_vector
-
-    my_vector2 = Vector([1, 2, 3])
-    print my_vector == my_vector2
-
-    my_vector3 = Vector([-1, 2, 3])
-    print my_vector == my_vector3
-
-    print my_vector.plus(my_vector2)
-    print my_vector.minus(my_vector3)
-    print my_vector.scalar_multiply(10)
-
     # Exercises
-    print 'Exercises'
+    print '=> Exercises - Arethmetic Operations'
     v1 = Vector([8.218, -9.341])
     v2 = Vector([-1.129, 2.111])
     print v1.plus(v2)
@@ -57,3 +55,17 @@ if __name__ == "__main__":
     s = 7.41
     v5 = Vector([1.671, -1.012, -0.318])
     print v5.scalar_multiply(s)
+
+    print
+    print '=> Exercises - Magnitude and Direction'
+    v6 = Vector([-0.221, 7.437])
+    print v6.magnitude()
+
+    v7 = Vector([8.813, -1.331, -6.247])
+    print v7.magnitude()
+
+    v8 = Vector([5.581, -2.136])
+    print v8.normalize()
+
+    v9  = Vector([1.996, 3.108, -4.554])
+    print v9.normalize()

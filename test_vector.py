@@ -1,4 +1,5 @@
 import unittest
+from math import sqrt
 from vector import Vector
 
 class TestVector(unittest.TestCase):
@@ -37,6 +38,25 @@ class TestVector(unittest.TestCase):
 
         result = v.scalar_multiply(c)
         expected = Vector([5, 10, 15])
+        self.assertEquals(expected, result)
+
+    def test_magnitude(self):
+        v = Vector([1, 2, 3])
+
+        result = v.magnitude()
+        expected = sqrt(14)
+        self.assertEquals(expected, result)
+
+    def test_normalize(self):
+        with self.assertRaises(Exception) as e:
+            Vector([0, 0, 0]).normalize()
+        self.assertEquals(e.exception.message, 'Cannot normalize the zero vector')
+        
+        
+        v = Vector([1, 2, 3])
+
+        result = v.normalize()
+        expected = Vector([1/sqrt(14), 2/sqrt(14), 3/sqrt(14)])
         self.assertEquals(expected, result)
 
 
