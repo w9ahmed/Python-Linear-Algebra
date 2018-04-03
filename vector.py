@@ -1,4 +1,10 @@
-from math import sqrt
+from math import sqrt, pi, acos
+
+def rad_to_deg(r):
+    return r * 180 / pi
+
+def deg_to_rad(d):
+    return d * pi / 180
 
 class Vector(object):
 
@@ -33,6 +39,12 @@ class Vector(object):
             return self.scalar_multiply(1. / self.magnitude())
         except ZeroDivisionError:
             raise Exception('Cannot normalize the zero vector')
+
+    def dot_product(self, v):
+        return sum([x*y for x,y in zip(self.coordinates, v.coordinates)])
+
+    def calculate_angle(self, v):
+        return acos(self.normalize().dot_product(v.normalize()))
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
@@ -69,3 +81,21 @@ if __name__ == "__main__":
 
     v9  = Vector([1.996, 3.108, -4.554])
     print v9.normalize()
+
+    print
+    print '=> Exercises - Dot Product and Angle'
+    v10 = Vector([7.887, 4.138])
+    v11 = Vector([-8.802, 6.776])
+    print v10.dot_product(v11)
+
+    v12 = Vector([-5.955, -4.904, -1.874])
+    v13 = Vector([-4.496, -8.755, 7.103])
+    print v12.dot_product(v13)
+
+    v14 = Vector([3.183, -7.627])
+    v15 = Vector([-2.668, 5.319])
+    print v14.calculate_angle(v15)
+
+    v16 = Vector([7.35, 0.221, 5.188])
+    v17 = Vector([2.751, 8.259, 3.985])
+    print rad_to_deg(v16.calculate_angle(v17))

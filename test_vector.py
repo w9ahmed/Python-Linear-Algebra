@@ -1,5 +1,5 @@
 import unittest
-from math import sqrt
+from math import sqrt, acos
 from vector import Vector
 
 class TestVector(unittest.TestCase):
@@ -51,13 +51,28 @@ class TestVector(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             Vector([0, 0, 0]).normalize()
         self.assertEquals(e.exception.message, 'Cannot normalize the zero vector')
-        
-        
+
+
         v = Vector([1, 2, 3])
 
         result = v.normalize()
         expected = Vector([1/sqrt(14), 2/sqrt(14), 3/sqrt(14)])
         self.assertEquals(expected, result)
+
+    def test_dot_product(self):
+        v1 = Vector([1, 2, 3])
+        v2 = Vector([1, 2, 3])
+
+        result = v1.dot_product(v2)
+        self.assertEquals(14, result)
+
+    def test_calculate_angle(self):
+        v1 = Vector([1, 2, 3])
+        v2 = Vector([1, 2, 3])
+
+        result = v1.calculate_angle(v2)
+        expected = acos((1 / 14.) + (4 / 14.) + (9 / 14.))
+        self.assertEqual(expected, result)
 
 
 if __name__ == '__main__':
