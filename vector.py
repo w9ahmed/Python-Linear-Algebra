@@ -1,4 +1,7 @@
 from math import sqrt, pi, acos
+from decimal import Decimal, getcontext
+
+getcontext().prec = 30
 
 def rad_to_deg(r):
     return r * 180 / pi
@@ -8,11 +11,13 @@ def deg_to_rad(d):
 
 class Vector(object):
 
+    CANNOT_NORMALIZE_ZERO_VECTOR_MSG = 'Cannot normalize the zero vector'
+
     def __init__(self, coordinates):
         try:
             if not coordinates:
                 raise ValueError
-            self.coordinates = tuple(coordinates)
+            self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
         except ValueError:
             raise ValueError('The coordinate must be nonempty')
@@ -28,23 +33,46 @@ class Vector(object):
         return Vector(new_coordinates)
 
     def scalar_multiply(self, c):
-        new_coordinates = [c*x for x in self.coordinates]
+        new_coordinates = [Decimal(c)*x for x in self.coordinates]
         return Vector(new_coordinates)
 
     def magnitude(self):
-        return sqrt(sum([x**2 for x in self.coordinates]))
+        return Decimal(sqrt(sum([x**2 for x in self.coordinates])))
 
     def normalize(self):
         try:
-            return self.scalar_multiply(1. / self.magnitude())
+            return self.scalar_multiply(Decimal(1.0) / self.magnitude())
         except ZeroDivisionError:
-            raise Exception('Cannot normalize the zero vector')
+            raise Exception(self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG)
 
     def dot_product(self, v):
         return sum([x*y for x,y in zip(self.coordinates, v.coordinates)])
 
-    def calculate_angle(self, v):
-        return acos(self.normalize().dot_product(v.normalize()))
+    def calculate_angle(self, v, in_degrees=False):
+        try:
+            u1 = self.normalize()
+            u2 = v.normalize()
+
+            angle_in_radians = acos(u1.dot_product(u2))
+
+            if in_degrees:
+                return rad_to_deg(angle_in_radians)
+            else:
+                return angle_in_radians
+        except Exception as e:
+            if str(e) == self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG:
+                raise Exception('Cannot compute angle with the zero vector')
+            else:
+                raise e
+
+    def is_orthogonal_to(self, v, tolerance=1e-10):
+        return abs(self.dot_product(v)) < tolerance
+
+    def is_parallel_to(self, v):
+        return (self.is_zero() or v.is_zero() or self.calculate_angle(v) == 0 or self.calculate_angle(v) == pi)
+
+    def is_zero(self, tolerance=1e-10):
+        return self.magnitude() < tolerance
 
     def __str__(self):
         return 'Vector: {}'.format(self.coordinates)
@@ -99,3 +127,25 @@ if __name__ == "__main__":
     v16 = Vector([7.35, 0.221, 5.188])
     v17 = Vector([2.751, 8.259, 3.985])
     print rad_to_deg(v16.calculate_angle(v17))
+
+    print
+    print '=> Exercises - Parallel and Orthogonal Vectors'
+    v18 = Vector([-7.579, -7.88])
+    v19 = Vector([22.737, 23.64])
+    print 'orthogonal:', v18.is_orthogonal_to(v19)
+    print 'parallel:', v18.is_parallel_to(v19)
+
+    v20 = Vector([-2.029, 9.97, 4.172])
+    v21 = Vector([-9.231, -6.639, -7.245])
+    print 'orthogonal:', v20.is_orthogonal_to(v21)
+    print 'parallel:', v20.is_parallel_to(v21)
+
+    v22 = Vector([-2.328, 7.284, -1.214])
+    v23 = Vector([-1.821, 1.072, -2.94])
+    print 'orthogonal:', v22.is_orthogonal_to(v23)
+    print 'parallel:', v22.is_parallel_to(v23)
+
+    v24 = Vector([2.118, 4.827])
+    v25 = Vector([0, 0])
+    print 'orthogonal:', v24.is_orthogonal_to(v25)
+    print 'parallel:', v24.is_parallel_to(v25)

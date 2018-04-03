@@ -1,6 +1,11 @@
 import unittest
 from math import sqrt, acos
+from decimal import Decimal, getcontext
 from vector import Vector
+
+
+getcontext().prec = 30
+
 
 class TestVector(unittest.TestCase):
     def test_init(self):
@@ -56,7 +61,9 @@ class TestVector(unittest.TestCase):
         v = Vector([1, 2, 3])
 
         result = v.normalize()
-        expected = Vector([1/sqrt(14), 2/sqrt(14), 3/sqrt(14)])
+        expected = Vector([1 / sqrt(14), 2 / sqrt(14), 3 / sqrt(14)])
+        print result
+        print expected
         self.assertEquals(expected, result)
 
     def test_dot_product(self):
