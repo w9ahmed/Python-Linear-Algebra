@@ -1,7 +1,4 @@
 from math import sqrt, pi, acos
-from decimal import Decimal, getcontext
-
-getcontext().prec = 30
 
 def rad_to_deg(r):
     return r * 180 / pi
@@ -17,7 +14,7 @@ class Vector(object):
         try:
             if not coordinates:
                 raise ValueError
-            self.coordinates = tuple([Decimal(x) for x in coordinates])
+            self.coordinates = tuple([x for x in coordinates])
             self.dimension = len(coordinates)
         except ValueError:
             raise ValueError('The coordinate must be nonempty')
@@ -33,15 +30,15 @@ class Vector(object):
         return Vector(new_coordinates)
 
     def scalar_multiply(self, c):
-        new_coordinates = [Decimal(c)*x for x in self.coordinates]
+        new_coordinates = [c*x for x in self.coordinates]
         return Vector(new_coordinates)
 
     def magnitude(self):
-        return Decimal(sqrt(sum([x**2 for x in self.coordinates])))
+        return sqrt(sum([x**2 for x in self.coordinates]))
 
     def normalize(self):
         try:
-            return self.scalar_multiply(Decimal(1.0) / self.magnitude())
+            return self.scalar_multiply(1.0 / self.magnitude())
         except ZeroDivisionError:
             raise Exception(self.CANNOT_NORMALIZE_ZERO_VECTOR_MSG)
 
